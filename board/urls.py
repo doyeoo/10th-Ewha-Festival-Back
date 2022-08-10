@@ -4,4 +4,5 @@ from .views import *
 app_name = 'board'
 
 urlpatterns = [
+    path('', BoothListView.as_view()),
 ]
