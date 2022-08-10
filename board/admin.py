@@ -19,5 +19,5 @@ class MenuAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-	list_display = ['id', 'user', 'post', 'content', 'created_at', 'updated_at']
+	list_display = ['id', 'user', 'booth', 'content', 'created_at', 'updated_at']
 	list_display_links = ['id']
