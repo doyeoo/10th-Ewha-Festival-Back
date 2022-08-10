@@ -44,7 +44,7 @@ class Booth(TimeStamp):
 
 
 class Menu(TimeStamp):
-    post = models.ForeignKey(Booth, on_delete=models.CASCADE)
+    booth = models.ForeignKey(Booth, on_delete=models.CASCADE, related_name='menus')
     menu = models.TextField()
     image = models.URLField(blank=True)
     price = models.PositiveIntegerField()
