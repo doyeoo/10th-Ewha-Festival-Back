@@ -46,3 +46,14 @@ class BoothDetailView(views.APIView):
         serializer = self.serializer_class(booth)
 
         return Response({'message': '부스 상세 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
+
+    def patch(self, request, pk):
+        booth = get_object_or_404(Booth, pk=pk)
+        serializer = self.serializer_class(data=request.data, instance=booth, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': '부스 정보 수정 성공', 'data': serializer.data}, status=HTTP_200_OK)
+        else:
+            return Response({'message': '부스 정보 수정 실패', 'data': serializer.errors}, status=HTTP_200_OK)
+
