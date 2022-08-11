@@ -66,3 +66,14 @@ class MenuDetailView(views.APIView):
         serializer = self.serializer_class(menus, many=True)
             
         return Response({'message': '메뉴 상세 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
+
+    def patch(self, request, pk):
+        menu_id = request.data.get('id')
+        menu = get_object_or_404(Menu, pk=menu_id)
+        serializer = self.serializer_class(data=request.data, instance=menu, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': '메뉴 정보 수정 성공', 'data': serializer.data}, status=HTTP_200_OK)
+        else:
+            return Response({'message': '메뉴 정보 수정 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
