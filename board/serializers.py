@@ -11,7 +11,8 @@ class MenuSerializer(serializers.ModelSerializer):
 class BoothSerializer(serializers.ModelSerializer):
     day = serializers.StringRelatedField(many=True, read_only=True)
     menus = MenuSerializer(read_only=True, many=True)
+    is_liked = serializers.BooleanField(default=False)
     
     class Meta:
         model = Booth
-        fields = ['id', 'user', 'day', 'college', 'name', 'image', 'notice', 'description', 'menus', 'like', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'day', 'college', 'name', 'image', 'notice', 'description', 'menus', 'is_liked', 'created_at', 'updated_at']

@@ -23,6 +23,10 @@ class BoothListView(views.APIView):
                 arguments[key] = value
 
         booths = Booth.objects.filter(**arguments)
+        if user:
+            for booth in booths:
+                if booth.like.filter(pk=user.id).exists():
+                    booth.is_liked=True
 
         serializer = self.serializer_class(booths, many=True)
 
