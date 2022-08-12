@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
+class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'nickname']
+        fields = ['id', 'username', 'password', 'nickname', 'is_booth']
 
     def create(self, validated_data):
         user = User.objects.create(
@@ -33,3 +33,9 @@ class LoginSerializer(serializers.Serializer):
                 return user
         else:
             raise serializers.ValidationError('존재하지 않는 사용자입니다.')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'nickname', 'is_booth']

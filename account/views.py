@@ -9,7 +9,7 @@ from .serializers import *
 
 
 class SignUpView(views.APIView):
-    serializer_class = UserSerializer
+    serializer_class = SignUpSerializer
 
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
@@ -17,7 +17,7 @@ class SignUpView(views.APIView):
         if serializer.is_valid():
             serializer.save()
             return Response({'message': '회원가입 성공', 'data': serializer.data}, status=HTTP_201_CREATED)
-        return Response({'message': '회원가입 실패', 'error': serializer.errors}, status=HTTP_400_BAD_REQUEST)
+        return Response({'message': '회원가입 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
 
 
 class LoginView(views.APIView):
@@ -31,3 +31,15 @@ class LoginView(views.APIView):
             login(request, user)
             return Response({'message': "로그인 성공", 'data': serializer.data}, status=HTTP_200_OK)
         return Response({'message': "로그인 실패", 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
+
+
+class ProfileView(views.APIView):
+    serializer_class = ProfileSerializer
+
+    def get(self, request):
+        user = request.user
+        data = get_object_or_404(User, pk=user.id)
+
+        serializer = self.serializer_class(data)
+
+        return Response({'message': "프로필 조회 성공", 'data': serializer.data}, status=HTTP_200_OK)
