@@ -5,7 +5,7 @@ from .models import Booth, Menu
 class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
-        fields = ['menu', 'image', 'price', 'is_soldout']
+        fields = ['id', 'menu', 'image', 'price', 'is_soldout']
 
 
 class BoothSerializer(serializers.ModelSerializer):
