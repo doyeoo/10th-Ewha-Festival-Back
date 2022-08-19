@@ -30,10 +30,17 @@ class Day(models.Model):
 
 
 class Booth(TimeStamp):
+    COLLEGE_CHOICES = (
+        ('학관', '학관'),
+        ('포스코관', '포스코관'),
+        ('경영관', '경영관'),
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     day = models.ManyToManyField(Day, related_name='booths')
-    college = models.CharField(max_length=20, blank=True)
+    college = models.CharField(choices=COLLEGE_CHOICES, max_length=20)
     name = models.TextField()
+    number = models.CharField(max_length=10, blank=True)
     image = models.URLField(blank=True)
     notice = models.TextField(blank=True)
     description = models.TextField(blank=True)
