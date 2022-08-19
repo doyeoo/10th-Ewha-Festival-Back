@@ -120,9 +120,11 @@ class SearchView(views.APIView):
 
     def get(self, request):
         keyword= request.GET.get('keyword')
-        booths = Booth.objects.filter(name__contains=keyword)
+        booths = Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)
 
         serializer = self.serializer_class(booths, many=True)
 
         return Response({'message':'부스 검색 성공', 'data': serializer.data}, status=HTTP_200_OK)
+
+
 
