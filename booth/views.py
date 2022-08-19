@@ -2,13 +2,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework import views
 from rest_framework.status import *
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from .models import *
 from .serializers import *
 
 
 class BoothListView(views.APIView):
-    serializer_class = BoothSerializer
+    serializer_class = BoothListSerializer
 
     def get(self, request):
         user = request.user
@@ -34,7 +35,8 @@ class BoothListView(views.APIView):
 
 
 class BoothDetailView(views.APIView):
-    serializer_class = BoothSerializer
+    serializer_class = BoothDetailSerializer
+    #permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk):
         user = request.user
@@ -60,6 +62,7 @@ class BoothDetailView(views.APIView):
 
 class MenuDetailView(views.APIView):
     serializer_class = MenuSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk):
         menus = Menu.objects.filter(booth=pk)
