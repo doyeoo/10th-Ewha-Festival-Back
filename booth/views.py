@@ -113,3 +113,16 @@ class LikeView(views.APIView):
             return Response({'message': '부스 좋아요 취소 성공', 'data': serializer.data}, status=HTTP_200_OK)
         else:
             return Response({'message': '부스 좋아요 취소 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
+
+
+class SearchView(views.APIView):
+    serializer_class = BoothListSerializer
+
+    def get(self, request):
+        keyword= request.GET.get('keyword')
+        booths = Booth.objects.filter(name__contains=keyword)
+
+        serializer = self.serializer_class(booths, many=True)
+
+        return Response({'message':'부스 검색 성공', 'data': serializer.data}, status=HTTP_200_OK)
+
