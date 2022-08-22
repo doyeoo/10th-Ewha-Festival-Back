@@ -31,9 +31,14 @@ class Day(models.Model):
 
 class Booth(TimeStamp):
     COLLEGE_CHOICES = (
-        ('학관', '학관'),
+        ('교육관', '교육관'),
+        ('대강당', '대강당'),
+        ('신세계관', '신세계관'),
+        ('생활관', '생활관'),
+        ('정문', '정문'),
         ('포스코관', '포스코관'),
-        ('경영관', '경영관'),
+        ('학문관', '학문관'),
+        ('후윳길', '후윳길')
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
