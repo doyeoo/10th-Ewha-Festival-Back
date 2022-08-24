@@ -14,7 +14,7 @@ class BoothListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Booth
-        fields = ['id', 'user', 'day', 'college', 'name', 'number', 'image', 'description', 'is_liked', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'day', 'college', 'name', 'number', 'thumnail', 'description', 'is_liked', 'created_at', 'updated_at']
 
 
 class BoothDetailSerializer(serializers.ModelSerializer):
@@ -24,4 +24,4 @@ class BoothDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Booth
-        fields = ['id', 'user', 'day', 'college', 'name', 'number', 'image', 'notice', 'description', 'menus', 'is_liked', 'like', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'day', 'college', 'name', 'number', 'thumnail', 'notice', 'description', 'images', 'menus', 'is_liked', 'like', 'created_at', 'updated_at']
