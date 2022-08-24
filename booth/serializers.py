@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Booth, Menu
+from .models import Booth, Menu, Image
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -17,9 +17,16 @@ class BoothListSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'day', 'college', 'name', 'number', 'thumnail', 'description', 'is_liked', 'created_at', 'updated_at']
 
 
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = ['id', 'image']
+
+
 class BoothDetailSerializer(serializers.ModelSerializer):
     day = serializers.StringRelatedField(many=True, read_only=True)
     menus = MenuSerializer(read_only=True, many=True)
+    images = ImageSerializer(read_only=True, many=True)
     is_liked = serializers.BooleanField(default=False)
     
     class Meta:
