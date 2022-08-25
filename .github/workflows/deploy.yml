@@ -54,6 +54,7 @@ jobs:
       
     - name: deploy with AWS codeDeploy
       run: aws deploy create-deployment
-        --application-name festival-app
+        --application-name festival-deploy
         --deployment-config-name CodeDeployDefault.OneAtATime
+        --deployment-group-name festival-deploy-group
         --s3-location bucket=festival-bucket,bundleType=tgz,key=archive/drcloud.tar.gz
