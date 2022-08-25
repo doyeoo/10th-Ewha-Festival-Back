@@ -47,7 +47,7 @@ jobs:
         id: deploy
         run: |
           aws deploy create-deployment \
-            --application-name django-test-codedeploy \
-            --deployment-group-name django-test-codedeploy-group \
+            --application-name festival-deploy \
+            --deployment-group-name festival-deploy-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
