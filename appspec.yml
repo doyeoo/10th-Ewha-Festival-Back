@@ -2,4 +2,4 @@ version: 0.0
 os: linux
 files:
   - source: ./
-    destination: home/10th-festival
+    destination: home/ubuntu/10th-festival
