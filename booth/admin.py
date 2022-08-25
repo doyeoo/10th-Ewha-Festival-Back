@@ -12,9 +12,14 @@ class BoothAdmin(admin.ModelAdmin):
 	list_display = ['id', 'user', 'name', 'created_at', 'updated_at']
 	list_display_links = ['id']
 
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+	list_display = ['id', 'booth', 'image', 'created_at', 'updated_at']
+	list_display_links = ['id']
+
 @admin.register(Menu)
 class MenuAdmin(admin.ModelAdmin):
-	list_display = ['id', 'booth', 'menu', 'image', 'price', 'is_soldout', 'created_at', 'updated_at']
+	list_display = ['id', 'booth', 'menu', 'price', 'is_soldout', 'created_at', 'updated_at']
 	list_display_links = ['id']
 
 @admin.register(Comment)
