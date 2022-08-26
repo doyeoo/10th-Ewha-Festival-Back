@@ -28,11 +28,8 @@ class LoginView(views.APIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-
         if serializer.is_valid():
-            user = serializer.validated_data
-            login(request, user)
-            return Response({'message': "로그인 성공", 'data': serializer.data}, status=HTTP_200_OK)
+            return Response({'message': "로그인 성공", 'data': serializer.validated_data}, status=HTTP_200_OK)
         return Response({'message': "로그인 실패", 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
 
 
