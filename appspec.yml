@@ -3,4 +3,5 @@ os: linux
 
 files:
   - source: /
-    destination: /home/ubuntu/10th-festival
+    destination: /home/ubuntu/10th-festival/
+    overwrite: yes
