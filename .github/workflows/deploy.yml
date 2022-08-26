@@ -44,7 +44,7 @@ jobs:
 
       
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://festival-bucket/archive/
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://festival-bucket/archive/$GITHUB_SHA.zip
         
       # Step 2
       - name: Create CodeDeploy Deployment
@@ -54,4 +54,4 @@ jobs:
             --application-name festival-deploy \
             --deployment-group-name festival-deploy-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
+            --s3-location bucket=festival-bucket,bundleType=zip,key=$GITHUB_SHA.zip
