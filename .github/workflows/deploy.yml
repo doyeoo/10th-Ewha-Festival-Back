@@ -54,4 +54,4 @@ jobs:
             --application-name festival-deploy \
             --deployment-group-name festival-deploy-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --s3-location bucket=festival-bucket,bundleType=zip,key=$GITHUB_SHA.zip
+            --s3-location bucket=festival-bucket,bundleType=zip,key=archive/$GITHUB_SHA.zip
