@@ -39,8 +39,8 @@ jobs:
           rm -rf *
           rsync -r $GITHUB_WORKSPACE . 
       
-      - name: archive drcloud 
-        run: tar cvfz ./drcloud.tar.gz *
+      - name: archive deploy 
+        run: tar cvfz ./deploy.zip *
         
       # Step 1
       - name: Configure AWS credentials
@@ -58,4 +58,4 @@ jobs:
             --application-name festival-deploy \
             --deployment-group-name festival-deploy-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --s3-location bucket=festival-bucket,bundleType=tgz,key=archive/drcloud.tar.gz
+            --s3-location bucket=festival-bucket,bundleType=zip,key=archive/deploy.zip
