@@ -1,41 +1,18 @@
-version: '3'
-services:
+FROM python:3.8.3-alpine
+ENV PYTHONUNBUFFERED 1
 
-  db:
-    container_name: db
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD: mysql
-    expose:
-      - 3306
-    ports:
-      - "3307:3306"
-    env_file:
-      - .env
-    volumes:
-      - dbdata:/var/lib/mysql
+RUN mkdir /app
+WORKDIR /app
 
-  web:
-    container_name: web
-    build: .
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    environment:
-      MYSQL_ROOT_PASSWORD: mysql
-      DATABASE_NAME: mysql
-      DATABASE_USER: 'root'
-      DATABASE_PASSWORD: mysql
-      DATABASE_PORT: 3306
-      DATABASE_HOST: db
-      DJANGO_SETTINGS_MODULE: festival.settings.dev
-    restart: always
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-volumes:
-  app:
-  dbdata:
+# dependencies for psycopg2-binary
+RUN apk add --no-cache mariadb-connector-c-dev
+RUN apk update && apk add python3 python3-dev mariadb-dev build-base && pip3 install mysqlclient && apk del python3-dev mariadb-dev build-base
+
+
+# By copying over requirements first, we make sure that Docker will cache
+# our installed requirements rather than reinstall them on every build
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+
+# Now copy in our code, and run it
+COPY . /app/
