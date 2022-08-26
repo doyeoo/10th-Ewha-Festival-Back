@@ -28,33 +28,26 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    # Checks-out your repository under $GITHUB_WORKSPACE so your job can access it
-    - name: checkout release
-      uses: actions/checkout@v3
-
-    # Runs a single command using the runners shell 
-    - name: Clean temp directory
-      run: |
-        rm -rf *
-        rsync -r $GITHUB_WORKSPACE . 
-      
-    - name: archive drcloud 
-      run: tar cvfz ./drcloud.tar.gz *
-       
-    - name: AWS configure credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
         
-    - name: upload to S3
-      run: aws s3 cp --region ap-northeast-2 ./drcloud.tar.gz s3://festival-bucket/archive/
-      
-    - name: deploy with AWS codeDeploy
-      run: aws deploy create-deployment
-        --application-name festival-deploy
-        --deployment-config-name CodeDeployDefault.OneAtATime
-        --deployment-group-name festival-deploy-group
-        --s3-location bucket=festival-bucket,bundleType=tgz,key=archive/drcloud.tar.gz
+  continuous-deployment:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      # Step 2
+      - name: Create CodeDeploy Deployment
+        id: deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name festival-deploy \
+            --deployment-group-name festival-deploy-group \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
