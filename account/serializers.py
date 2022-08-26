@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 
 
@@ -30,7 +31,17 @@ class LoginSerializer(serializers.Serializer):
             if not user.check_password(password):
                 raise serializers.ValidationError('잘못된 비밀번호입니다.')
             else:
-                return user
+                token = RefreshToken.for_user(user)
+                refresh = str(token)
+                access = str(token.access_token)
+
+                data = {
+                    'id': user.id,
+                    'nickname': user.username,
+                    'access_token': access
+                }
+
+                return data
         else:
             raise serializers.ValidationError('존재하지 않는 사용자입니다.')
 
