@@ -1,0 +1,5 @@
+cd /home/ubuntu/app
+docker-compose down
+
+cd /home/ubuntu
+rm -rf ./app
