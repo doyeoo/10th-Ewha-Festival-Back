@@ -7,11 +7,11 @@ from .serializers import *
 
 # Create your views here.
 
-class NoticeView(views.APIView):
+class NoticeListView(views.APIView):
     serializer_class = NoticeSerializer
 
     def post(self, request):
-        serializer=NoticeSerializer(data=request.data)
+        serializer=self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'TF 공지 작성 성공', 'data': serializer.data}, status=HTTP_200_OK)
