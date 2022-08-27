@@ -9,4 +9,5 @@ urlpatterns = [
     path('<int:pk>/', BoothDetailView.as_view()),
     path('<int:pk>/menus/', MenuDetailView.as_view()),
     path('<int:pk>/likes/', LikeView.as_view()),
+    path('<int:pk>/comments/', CommentView.as_view()),
 ]

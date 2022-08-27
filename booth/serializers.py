@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Booth, Menu, Image
+from .models import Booth, Menu, Image, Comment
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -32,3 +32,9 @@ class BoothDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booth
         fields = ['id', 'user', 'day', 'college', 'name', 'number', 'thumnail', 'notice', 'description', 'images', 'menus', 'is_liked', 'like', 'created_at', 'updated_at']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['booth', 'user', 'content', 'created_at', 'updated_at']
