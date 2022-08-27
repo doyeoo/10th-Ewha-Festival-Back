@@ -13,7 +13,7 @@ class NoticeListView(views.APIView):
     def get(self, request, format=None):
         notices = Notice.objects.all()
         serializer = self.serializer_class(notices, many=True)
-        return Response({'message': 'TF 목록 조회 성공', 'data': serializer.data})
+        return Response({'message': 'TF 공지 목록 조회 성공', 'data': serializer.data})
 
     def post(self, request):
         data = {

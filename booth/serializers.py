@@ -37,4 +37,4 @@ class BoothDetailSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['booth', 'user', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'booth', 'user', 'content', 'created_at', 'updated_at']
