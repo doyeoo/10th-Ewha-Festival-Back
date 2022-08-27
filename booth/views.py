@@ -143,3 +143,10 @@ class CommentView(views.APIView):
             return Response({'message': '댓글 작성 성공', 'data': serializer.data}, status=HTTP_200_OK)
         else:
             return Response({'message': '댓글 작성 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        comment_id = request.data.get('comment_id')
+        comment = get_object_or_404(Comment, pk=comment_id)
+        comment.delete()
+        
+        return Response({'message': '댓글 삭제 성공'}, status=HTTP_204_NO_CONTENT)
