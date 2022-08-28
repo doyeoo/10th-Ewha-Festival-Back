@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import views
 from rest_framework.status import *
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import *
 from .serializers import *
 from .permissions import IsTFOrReadOnly
@@ -29,7 +29,7 @@ class NoticeListView(views.APIView):
 
 class NoticeDetailView(views.APIView):
     serializer_class = NoticeSerializer
-    permission_classes = [IsTFOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsTFOrReadOnly]
 
     def get_object(self, pk):
         notice = get_object_or_404(Notice, pk=pk)
