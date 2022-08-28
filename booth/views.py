@@ -1,3 +1,4 @@
+import imp
 from django.shortcuts import get_object_or_404
 from rest_framework import views
 from rest_framework.status import *
@@ -6,6 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 
 from .models import *
 from .serializers import *
+from .permissions import IsAuthorOrReadOnly
 
 
 class BoothListView(views.APIView):
@@ -36,11 +38,16 @@ class BoothListView(views.APIView):
 
 class BoothDetailView(views.APIView):
     serializer_class = BoothDetailSerializer
-    #permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
+
+    def get_object(self, pk):
+        booth = get_object_or_404(Booth, pk=pk)
+        self.check_object_permissions(self.request, booth)
+        return booth
 
     def get(self, request, pk):
         user = request.user
-        booth = get_object_or_404(Booth, pk=pk)
+        booth = self.get_object(pk=pk)
 
         if booth.like.filter(pk=user.id).exists():
             booth.is_liked=True
@@ -50,7 +57,7 @@ class BoothDetailView(views.APIView):
         return Response({'message': '부스 상세 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
 
     def patch(self, request, pk):
-        booth = get_object_or_404(Booth, pk=pk)
+        booth = self.get_object(pk=pk)
         serializer = self.serializer_class(data=request.data, instance=booth, partial=True)
 
         if serializer.is_valid():
@@ -62,7 +69,12 @@ class BoothDetailView(views.APIView):
 
 class MenuDetailView(views.APIView):
     serializer_class = MenuSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
+
+    def get_object(self, pk):
+        menu = get_object_or_404(Menu, pk=pk)
+        self.check_object_permissions(self.request, menu)
+        return menu
 
     def get(self, request, pk):
         menus = Menu.objects.filter(booth=pk)
@@ -72,7 +84,7 @@ class MenuDetailView(views.APIView):
 
     def patch(self, request, pk):
         menu_id = request.data.get('id')
-        menu = get_object_or_404(Menu, pk=menu_id)
+        menu = self.get_object(pk=pk)
         serializer = self.serializer_class(data=request.data, instance=menu, partial=True)
         
         if serializer.is_valid():
@@ -141,7 +153,8 @@ class CommentView(views.APIView):
             return Response({'message': '댓글 작성 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
     
 
-class CommentDetailView(views.APIView):
+class CommentDetailView(views.APIView): 
+    permission_classes = [IsAuthorOrReadOnly]
 
     def delete(self, request, pk, comment_pk):
         comment = get_object_or_404(Comment, pk=comment_pk)
