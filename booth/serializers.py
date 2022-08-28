@@ -24,6 +24,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
     class Meta:
         model = Comment
         fields = ['id', 'booth', 'user', 'content', 'created_at', 'updated_at']
