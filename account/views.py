@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import *
 from .serializers import *
 from booth.models import Booth
-from booth.serializers import BoothDetailSerializer
+from booth.serializers import BoothListSerializer
 
 
 class SignUpView(views.APIView):
@@ -47,7 +47,7 @@ class ProfileView(views.APIView):
 
 
 class LikedListView(views.APIView):
-    serializer_class = BoothDetailSerializer
+    serializer_class = BoothListSerializer
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
