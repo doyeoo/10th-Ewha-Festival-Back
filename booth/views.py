@@ -67,24 +67,27 @@ class BoothDetailView(views.APIView):
             return Response({'message': '부스 정보 수정 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
 
 
+class MenuListView(views.APIView):
+    serializer_class = MenuSerializer
+
+    def get(self, request, pk):
+        menus = Menu.objects.filter(booth=pk)
+        serializer = self.serializer_class(menus, many=True)
+            
+        return Response({'message': '메뉴 목록 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
+
+
 class MenuDetailView(views.APIView):
     serializer_class = MenuSerializer
     permission_classes = [IsAuthorOrReadOnly]
 
     def get_object(self, pk):
         menu = get_object_or_404(Menu, pk=pk)
-        self.check_object_permissions(self.request, menu)
+        self.check_object_permissions(self.request, menu.booth)
         return menu
 
-    def get(self, request, pk):
-        menus = Menu.objects.filter(booth=pk)
-        serializer = self.serializer_class(menus, many=True)
-            
-        return Response({'message': '메뉴 상세 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
-
-    def patch(self, request, pk):
-        menu_id = request.data.get('id')
-        menu = self.get_object(pk=pk)
+    def patch(self, request, pk, menu_pk):
+        menu = self.get_object(pk=menu_pk)
         serializer = self.serializer_class(data=request.data, instance=menu, partial=True)
         
         if serializer.is_valid():
