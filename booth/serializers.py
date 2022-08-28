@@ -23,18 +23,20 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'booth', 'user', 'content', 'created_at', 'updated_at']
+
+
 class BoothDetailSerializer(serializers.ModelSerializer):
     day = serializers.StringRelatedField(many=True, read_only=True)
     menus = MenuSerializer(read_only=True, many=True)
     images = ImageSerializer(read_only=True, many=True)
     is_liked = serializers.BooleanField(default=False)
-    
+    comments = CommentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Booth
-        fields = ['id', 'user', 'day', 'college', 'name', 'number', 'thumnail', 'notice', 'description', 'images', 'menus', 'is_liked', 'like', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'day', 'college', 'name', 'number', 'thumnail', 'notice', 'description', 'images', 'menus', 'is_liked', 'like', 'created_at', 'updated_at', 'comments']
 
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = ['id', 'booth', 'user', 'content', 'created_at', 'updated_at']

@@ -68,7 +68,7 @@ class Menu(TimeStamp):
 
 
 class Comment(TimeStamp):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    booth = models.ForeignKey(Booth, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    booth = models.ForeignKey(Booth, on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
 
