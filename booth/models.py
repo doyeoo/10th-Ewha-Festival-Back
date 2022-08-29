@@ -57,7 +57,7 @@ class Booth(TimeStamp):
 
 class Image(TimeStamp):
     booth = models.ForeignKey(Booth, on_delete=models.CASCADE, related_name='images')
-    image = models.FileField()
+    image = models.URLField()
 
 
 class Menu(TimeStamp):
