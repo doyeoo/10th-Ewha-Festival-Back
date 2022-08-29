@@ -7,6 +7,7 @@ urlpatterns = [
     path('', BoothListView.as_view()),
     path('search/', SearchView.as_view()),
     path('<int:pk>/', BoothDetailView.as_view()),
+    path('<int:pk>/images/', BoothImageView.as_view()),
     path('<int:pk>/menus/', MenuListView.as_view()),
     path('<int:pk>/menus/<int:menu_pk>/', MenuDetailView.as_view()),
     path('<int:pk>/likes/', LikeView.as_view()),
