@@ -1,15 +1,25 @@
+import boto3
+import uuid
+
 from django.shortcuts import get_object_or_404
 from rest_framework import views
 from rest_framework.status import *
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 from .models import *
 from .serializers import *
 from .permissions import IsAuthorOrReadOnly
+from .pagination import PaginationHandlerMixin
+from festival.settings.base import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, IMAGE_URL
 
+
+class BoothPagination(PageNumberPagination):
+    page_size=2
 
 class BoothListView(views.APIView):
+    pagination_class = BoothPagination
     serializer_class = BoothListSerializer
 
     def get(self, request):
@@ -29,11 +39,10 @@ class BoothListView(views.APIView):
             for booth in booths:
                 if booth.like.filter(pk=user.id).exists():
                     booth.is_liked=True
-
+        
         serializer = self.serializer_class(booths, many=True)
-
         return Response({'message': '부스 목록 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
-
+        
 
 class BoothDetailView(views.APIView):
     serializer_class = BoothDetailSerializer
@@ -168,3 +177,28 @@ class CommentDetailView(views.APIView):
         comment.delete()
         
         return Response({'message': '댓글 삭제 성공'}, status=HTTP_204_NO_CONTENT)
+
+
+class BoothImageView(views.APIView):
+    serialize_class = ImageSerializer
+    
+    def post(self, request, pk) :
+            try :
+                images = request.FILES.getlist('images')
+                booth = get_object_or_404(Booth, pk=pk)
+                booth_name = booth.name
+                s3r = boto3.resource('s3', aws_access_key_id= AWS_ACCESS_KEY_ID, aws_secret_access_key= AWS_SECRET_ACCESS_KEY)
+                key = "%s/images" %(booth_name)
+
+                for image in images :
+                    image._set_name(str(uuid.uuid4()))
+                    s3r.Bucket(S3_BUCKET_NAME).put_object( Key=key+'/%s'%(image), Body=image, ContentType=image.content_type)
+                    Image.objects.create(
+                        booth = booth,
+                        image = IMAGE_URL+"%s/%s"%(key, image)
+                    )
+                return Response({"message" : "이미지 업로드 성공"}, status=HTTP_200_OK)
+
+            except Exception as e :
+                return Response({"message" : "이미지 업로드 실패"}, status=HTTP_400_BAD_REQUEST)
+    
