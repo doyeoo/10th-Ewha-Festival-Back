@@ -11,7 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 from .models import *
 from .serializers import *
 from .permissions import IsAuthorOrReadOnly
-from .pagination import PaginationHandlerMixin
+#from .pagination import PaginationHandlerMixin
 from festival.settings.base import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, IMAGE_URL
 
 
@@ -42,7 +42,7 @@ class BoothListView(views.APIView):
         
         serializer = self.serializer_class(booths, many=True)
         return Response({'message': '부스 목록 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
-        
+
 
 class BoothDetailView(views.APIView):
     serializer_class = BoothDetailSerializer
