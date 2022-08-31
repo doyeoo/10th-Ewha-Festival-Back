@@ -12,7 +12,7 @@ from .models import *
 from .serializers import *
 from .permissions import IsAuthorOrReadOnly
 #from .pagination import PaginationHandlerMixin
-from festival.settings.base import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_BUCKET_NAME, IMAGE_URL
+from .storages import FileUpload, s3_client
 
 
 class BoothPagination(PageNumberPagination):
@@ -183,22 +183,16 @@ class BoothImageView(views.APIView):
     serialize_class = ImageSerializer
     
     def post(self, request, pk) :
-            try :
-                images = request.FILES.getlist('images')
-                booth = get_object_or_404(Booth, pk=pk)
-                booth_name = booth.name
-                s3r = boto3.resource('s3', aws_access_key_id= AWS_ACCESS_KEY_ID, aws_secret_access_key= AWS_SECRET_ACCESS_KEY)
-                key = "%s/images" %(booth_name)
+        files = request.FILES.getlist('file')
+        booth = get_object_or_404(Booth, pk=pk)
+        booth_name = booth.name
+        folder = booth_name+'/images'
 
-                for image in images :
-                    image._set_name(str(uuid.uuid4()))
-                    s3r.Bucket(S3_BUCKET_NAME).put_object( Key=key+'/%s'%(image), Body=image, ContentType=image.content_type)
-                    Image.objects.create(
-                        booth = booth,
-                        image = IMAGE_URL+"%s/%s"%(key, image)
-                    )
-                return Response({"message" : "이미지 업로드 성공"}, status=HTTP_200_OK)
-
-            except Exception as e :
-                return Response({"message" : "이미지 업로드 실패"}, status=HTTP_400_BAD_REQUEST)
+        for file in files :
+            file_url = FileUpload(file, folder)
+            Image.objects.create(
+                booth = booth,
+                image = file_url
+            )
+        return Response({"message" : "이미지 업로드 성공"}, status=HTTP_200_OK)
     
