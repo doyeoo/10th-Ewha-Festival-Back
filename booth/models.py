@@ -46,7 +46,7 @@ class Booth(TimeStamp):
     college = models.CharField(choices=COLLEGE_CHOICES, max_length=20)
     name = models.TextField()
     number = models.CharField(max_length=10, blank=True)
-    thumnail = models.URLField(null=True, blank=True)
+    thumnail = models.TextField(null=True, blank=True)
     notice = models.TextField(blank=True)
     description = models.TextField(blank=True)
     like = models.ManyToManyField(User, related_name='booths', blank=True)
@@ -57,7 +57,7 @@ class Booth(TimeStamp):
 
 class Image(TimeStamp):
     booth = models.ForeignKey(Booth, on_delete=models.CASCADE, related_name='images')
-    image = models.URLField()
+    image = models.TextField()
 
 
 class Menu(TimeStamp):
