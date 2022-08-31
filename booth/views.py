@@ -179,17 +179,32 @@ class CommentDetailView(views.APIView):
         return Response({'message': '댓글 삭제 성공'}, status=HTTP_204_NO_CONTENT)
 
 
+class BoothThumnailView(views.APIView):
+    def patch(self, request, pk):
+        file = request.FILES.get('file')
+        booth = get_object_or_404(Booth, pk=pk)
+        folder = booth.name+'/thumnail'
+
+        serializer = BoothListSerializer(data=request.data, instance=booth, partial=True)
+        
+        if serializer.is_valid():
+            file_url = FileUpload(s3_client).upload(file, folder)
+            serializer.save(thumnail=file_url)
+            return Response({'message': '대표 사진 업로드 성공', 'data': serializer.data}, status=HTTP_200_OK)
+        else:
+            return Response({'message': '대표 사진 업로드 실패', 'data': serializer.errors}, status=HTTP_400_BAD_REQUEST)
+
+
 class BoothImageView(views.APIView):
     serialize_class = ImageSerializer
     
     def post(self, request, pk) :
         files = request.FILES.getlist('file')
         booth = get_object_or_404(Booth, pk=pk)
-        booth_name = booth.name
-        folder = booth_name+'/images'
+        folder = booth.name+'/images'
 
         for file in files :
-            file_url = FileUpload(file, folder)
+            file_url = FileUpload(s3_client).upload(file, folder)
             Image.objects.create(
                 booth = booth,
                 image = file_url
