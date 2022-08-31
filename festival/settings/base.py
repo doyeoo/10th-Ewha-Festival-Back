@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'account',
     'booth',
     'notice',
+    'health_check', 
 ]
 
 REST_FRAMEWORK = {
