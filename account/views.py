@@ -40,11 +40,16 @@ class ProfileView(views.APIView):
     def get(self, request):
         user = request.user
         data = get_object_or_404(User, pk=user.id)
-        booth = get_object_or_404(Booth, user=user)
+        
+        try:
+            booth = Booth.objects.get(user=user)
+            booth_id = booth.id
+        except Booth.DoesNotExist:
+            booth_id = None
 
         serializer = self.serializer_class(data)
         newdict=serializer.data
-        newdict.update({'booth_id':booth.id})
+        newdict.update({'booth_id':booth_id})
 
         return Response({'message': "프로필 조회 성공", 'data': newdict}, status=HTTP_200_OK)
 
