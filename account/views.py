@@ -40,10 +40,13 @@ class ProfileView(views.APIView):
     def get(self, request):
         user = request.user
         data = get_object_or_404(User, pk=user.id)
+        booth = get_object_or_404(Booth, user=user)
 
         serializer = self.serializer_class(data)
+        newdict=serializer.data
+        newdict.update({'booth_id':booth.id})
 
-        return Response({'message': "프로필 조회 성공", 'data': serializer.data}, status=HTTP_200_OK)
+        return Response({'message': "프로필 조회 성공", 'data': newdict}, status=HTTP_200_OK)
 
 
 class LikedListView(views.APIView):

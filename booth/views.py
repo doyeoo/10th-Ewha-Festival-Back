@@ -18,6 +18,7 @@ from .storages import FileUpload, s3_client
 class BoothPagination(PageNumberPagination):
     page_size=2
 
+
 class BoothListView(views.APIView):
     pagination_class = BoothPagination
     serializer_class = BoothListSerializer
@@ -184,7 +185,7 @@ class BoothThumnailView(views.APIView):
         file = request.FILES.get('file')
         booth = get_object_or_404(Booth, pk=pk)
         folder = booth.name+'/thumnail'
-
+    
         serializer = BoothListSerializer(data=request.data, instance=booth, partial=True)
         
         if serializer.is_valid():
