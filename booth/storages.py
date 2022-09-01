@@ -23,7 +23,7 @@ class MyS3Client:
 
     def upload(self, file, folder):
         try: 
-            file_id    = str(uuid.uuid4())
+            file_id    = str(file)
             path = folder+'/'+file_id
             extra_args = { 'ContentType' : file.content_type }
 
