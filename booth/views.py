@@ -158,6 +158,7 @@ class CommentView(views.APIView):
     def post(self, request, pk):
         booth = get_object_or_404(Booth, pk=pk)
         serializer = self.serializer_class(data=request.data)
+        
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user, booth=booth)
             return Response({'message': '댓글 작성 성공', 'data': serializer.data}, status=HTTP_200_OK)

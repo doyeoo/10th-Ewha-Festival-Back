@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Booth, Menu, Image, Comment
+from account.models import User
 
 
 class MenuSerializer(serializers.ModelSerializer):
@@ -24,8 +26,15 @@ class ImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'nickname']
+
+
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = Comment
         fields = ['id', 'booth', 'user', 'content', 'created_at', 'updated_at']
