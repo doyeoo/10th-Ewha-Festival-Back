@@ -8,12 +8,19 @@ from .models import *
 from .serializers import *
 from .permissions import IsTFOrReadOnly
 
+
 class NoticeListView(views.APIView):
     serializer_class = NoticeSerializer
     permission_classes = [IsTFOrReadOnly]
 
-    def get(self, request):
+    def get_object(self):
         notices = Notice.objects.all()
+        self.check_object_permissions(self.request, notices)
+
+        return notices
+
+    def get(self, request):
+        notices = self.get_object()
         serializer = self.serializer_class(notices, many=True)
         
         return Response({'message': 'TF 공지 목록 조회 성공', 'data': serializer.data})
