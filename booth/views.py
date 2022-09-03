@@ -145,6 +145,7 @@ class SearchView(views.APIView):
     def get(self, request):
         keyword= request.GET.get('keyword')
         booths = Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)
+        booths = booths.distinct()
 
         serializer = self.serializer_class(booths, many=True)
 
