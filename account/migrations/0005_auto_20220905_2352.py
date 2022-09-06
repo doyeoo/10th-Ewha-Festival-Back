@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='is_booth',
-            field=models.BooleanField(default=True),
+            field=models.BooleanField(default=False),
         ),
     ]
