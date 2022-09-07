@@ -1,5 +1,6 @@
 import boto3
 import uuid
+import math
 
 from django.shortcuts import get_object_or_404
 from rest_framework import views
@@ -16,7 +17,7 @@ from .storages import FileUpload, s3_client
 
 
 class BoothPagination(PageNumberPagination):
-    page_size=2
+    page_size=1
 
 
 class BoothListView(views.APIView, PaginationHandlerMixin):
@@ -35,14 +36,16 @@ class BoothListView(views.APIView, PaginationHandlerMixin):
             if value:
                 arguments[key] = value
 
-        booths = Booth.objects.filter(**arguments)
+        booths = self.paginate_queryset(Booth.objects.filter(**arguments))
+        total = math.ceil(booths.__len__()/10)
+
         if user:
             for booth in booths:
                 if booth.like.filter(pk=user.id).exists():
                     booth.is_liked=True
         
         serializer = self.serializer_class(booths, many=True)
-        return Response({'message': '부스 목록 조회 성공', 'data': serializer.data}, status=HTTP_200_OK)
+        return Response({'message': '부스 목록 조회 성공', 'total': total, 'data': serializer.data}, status=HTTP_200_OK)
 
 
 class BoothDetailView(views.APIView):
