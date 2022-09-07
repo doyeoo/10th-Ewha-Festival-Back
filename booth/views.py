@@ -39,7 +39,7 @@ class BoothListView(views.APIView, PaginationHandlerMixin):
         booths = Booth.objects.filter(**arguments)
         booths = self.paginate_queryset(booths)
         total = booths.__len__()
-        total_page = math.ceil(total.__len__()/10)
+        total_page = math.ceil(total/10)
 
         if user:
             for booth in booths:
@@ -155,7 +155,7 @@ class SearchView(views.APIView):
         booths = (Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)).distinct()
         booths = self.paginate_queryset(booths)
         total = booths.__len__()
-        total_page = math.ceil(total.__len__()/10)
+        total_page = math.ceil(total/10)
 
         if user:
             for booth in booths:
