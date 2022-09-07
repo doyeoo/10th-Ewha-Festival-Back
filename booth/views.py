@@ -145,7 +145,6 @@ class LikeView(views.APIView):
 
 
 class SearchView(views.APIView):
-    pagination_class = BoothPagination
     serializer_class = BoothListSerializer
 
     def get(self, request):
@@ -153,9 +152,6 @@ class SearchView(views.APIView):
         keyword= request.GET.get('keyword')
 
         booths = (Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)).distinct()
-        total = booths.__len__()
-        total_page = math.ceil(total/10)
-        booths = self.paginate_queryset(booths)
 
         if user:
             for booth in booths:
@@ -164,7 +160,7 @@ class SearchView(views.APIView):
 
         serializer = self.serializer_class(booths, many=True)
 
-        return Response({'message':'부스 검색 성공', 'total': total, 'total_page' : total_page, 'data': serializer.data}, status=HTTP_200_OK)
+        return Response({'message':'부스 검색 성공', 'data': serializer.data}, status=HTTP_200_OK)
 
 
 class CommentView(views.APIView):
