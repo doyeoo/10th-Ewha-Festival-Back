@@ -38,7 +38,8 @@ class BoothListView(views.APIView, PaginationHandlerMixin):
 
         booths = Booth.objects.filter(**arguments)
         booths = self.paginate_queryset(booths)
-        total = math.ceil(booths.__len__()/10)
+        total = booths.__len__()
+        total_page = math.ceil(total.__len__()/10)
 
         if user:
             for booth in booths:
@@ -46,7 +47,7 @@ class BoothListView(views.APIView, PaginationHandlerMixin):
                     booth.is_liked=True
         
         serializer = self.serializer_class(booths, many=True)
-        return Response({'message': '부스 목록 조회 성공', 'total': total, 'data': serializer.data}, status=HTTP_200_OK)
+        return Response({'message': '부스 목록 조회 성공', 'total': total, 'total_page' : total_page, 'data': serializer.data}, status=HTTP_200_OK)
 
 
 class BoothDetailView(views.APIView):
@@ -149,12 +150,12 @@ class SearchView(views.APIView):
 
     def get(self, request):
         user = request.user
-
         keyword= request.GET.get('keyword')
 
         booths = (Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)).distinct()
         booths = self.paginate_queryset(booths)
-        total = math.ceil(booths.__len__()/10)
+        total = booths.__len__()
+        total_page = math.ceil(total.__len__()/10)
 
         if user:
             for booth in booths:
@@ -163,7 +164,7 @@ class SearchView(views.APIView):
 
         serializer = self.serializer_class(booths, many=True)
 
-        return Response({'message':'부스 검색 성공', 'total' : total, 'data': serializer.data}, status=HTTP_200_OK)
+        return Response({'message':'부스 검색 성공', 'total': total, 'total_page' : total_page, 'data': serializer.data}, status=HTTP_200_OK)
 
 
 class CommentView(views.APIView):
