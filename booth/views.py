@@ -17,7 +17,7 @@ from .storages import FileUpload, s3_client
 
 
 class BoothPagination(PageNumberPagination):
-    page_size=1
+    page_size=10
 
 
 class BoothListView(views.APIView, PaginationHandlerMixin):
@@ -36,7 +36,8 @@ class BoothListView(views.APIView, PaginationHandlerMixin):
             if value:
                 arguments[key] = value
 
-        booths = self.paginate_queryset(Booth.objects.filter(**arguments))
+        booths = Booth.objects.filter(**arguments)
+        booths = self.paginate_queryset(booths)
         total = math.ceil(booths.__len__()/10)
 
         if user:
@@ -143,16 +144,26 @@ class LikeView(views.APIView):
 
 
 class SearchView(views.APIView):
+    pagination_class = BoothPagination
     serializer_class = BoothListSerializer
 
     def get(self, request):
+        user = request.user
+
         keyword= request.GET.get('keyword')
-        booths = Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)
-        booths = booths.distinct()
+
+        booths = (Booth.objects.filter(name__contains=keyword) | Booth.objects.filter(menus__menu__contains=keyword)).distinct()
+        booths = self.paginate_queryset(booths)
+        total = math.ceil(booths.__len__()/10)
+
+        if user:
+            for booth in booths:
+                if booth.like.filter(pk=user.id).exists():
+                    booth.is_liked=True
 
         serializer = self.serializer_class(booths, many=True)
 
-        return Response({'message':'부스 검색 성공', 'data': serializer.data}, status=HTTP_200_OK)
+        return Response({'message':'부스 검색 성공', 'total' : total, 'data': serializer.data}, status=HTTP_200_OK)
 
 
 class CommentView(views.APIView):
