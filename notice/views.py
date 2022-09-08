@@ -14,7 +14,7 @@ class NoticeListView(views.APIView):
     permission_classes = [IsTFOrReadOnly]
 
     def get(self, request):
-        notices = Notice.objects.all()
+        notices = Notice.objects.all().order_by('-created_at')
         serializer = self.serializer_class(notices, many=True)
         
         return Response({'message': 'TF 공지 목록 조회 성공', 'data': serializer.data})
