@@ -3,6 +3,9 @@ import uuid
 import math
 
 from django.shortcuts import get_object_or_404
+from django.db.models import IntegerField
+from django.db.models.functions import Cast, Substr
+
 from rest_framework import views
 from rest_framework.status import *
 from rest_framework.response import Response
@@ -36,7 +39,9 @@ class BoothListView(views.APIView, PaginationHandlerMixin):
             if value:
                 arguments[key] = value
 
-        booths = Booth.objects.filter(**arguments)
+        booths = Booth.objects.filter(**arguments).annotate(
+                    number_order = Cast(Substr("number", 2), IntegerField())
+                ).order_by("number_order")
         total = booths.__len__()
         total_page = math.ceil(total/10)
         booths = self.paginate_queryset(booths)
